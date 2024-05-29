@@ -39,7 +39,7 @@ function Fighter() {
   const handleNewPokemon = () => {
     setPokeId(Math.floor(Math.random() * 809) + 1);
   };
-  console.log(randomPokemon.base_experience);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
