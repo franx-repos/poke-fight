@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function useFetchData() {
-  const [pokemons, setPokemons] = useState([]);
+function useGetPokemon(pokeId) {
+  const [randomPokemon, setRandomPokemon] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -10,8 +10,10 @@ function useFetchData() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`http://localhost:8000/pokemons/`);
-        setPokemons(response.data);
+        const response = await axios.get(
+          `http://localhost:8000/pokemons/${pokeId}`
+        );
+        setRandomPokemon(response.data);
         setIsLoading(false);
       } catch (error) {
         setError(error.message);
@@ -22,7 +24,7 @@ function useFetchData() {
     fetchData();
   }, []);
 
-  return { pokemons, isLoading };
+  return { randomPokemon, isLoading };
 }
 
-export default useFetchData;
+export default useGetPokemon;
