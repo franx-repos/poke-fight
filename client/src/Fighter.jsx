@@ -1,10 +1,39 @@
-import { useEffect } from "react";
-import useGetPokemon from "./GetFighter";
-// import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-function Fighter({ availablePokemons }) {
-  const pokeId = Math.floor(Math.random() * 809) + 1;
+function useGetPokemon(pokeId) {
+  const [randomPokemon, setRandomPokemon] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/pokemons/${pokeId}`
+        );
+        setRandomPokemon(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        setError(error.message);
+        console.error(error);
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, [pokeId]);
+
+  return { randomPokemon, isLoading, error };
+}
+
+function Fighter() {
+  const [pokeId, setPokeId] = useState(Math.floor(Math.random() * 809) + 1);
   const { randomPokemon, isLoading, error } = useGetPokemon(pokeId);
+
+  const handleNewPokemon = () => {
+    setPokeId(Math.floor(Math.random() * 809) + 1);
+  };
 
   useEffect(() => {
     if (randomPokemon) {
@@ -38,12 +67,9 @@ function Fighter({ availablePokemons }) {
         <p>XP: {/* Insert XP value here if available */}</p>
       </div>
       <p>HP: {randomPokemon.base.HP}</p>
+      <button onClick={handleNewPokemon}>Get New Pokemon</button>
     </>
   );
 }
-
-// Fighter.propTypes = {
-//   availablePokemons: PropTypes.number.isRequired,
-// };
 
 export default Fighter;
