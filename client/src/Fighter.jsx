@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function useGetPokemon(pokeId) {
+function useGetPokemonAndImage(pokeId) {
   const [randomPokemon, setRandomPokemon] = useState([]);
+  const [pokemonImage, setPokemonImage] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -10,10 +11,12 @@ function useGetPokemon(pokeId) {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(
-          `http://localhost:8000/pokemons/${pokeId}`
-        );
-        setRandomPokemon(response.data);
+        const [pokemonResponse, imageResponse] = await Promise.all([
+          axios.get(`http://localhost:8000/pokemons/${pokeId}`),
+          axios.get(`https://pokeapi.co/api/v2/pokemon/${pokeId}`),
+        ]);
+        setRandomPokemon(pokemonResponse.data);
+        setPokemonImage(imageResponse.data);
         setIsLoading(false);
       } catch (error) {
         setError(error.message);
@@ -24,31 +27,25 @@ function useGetPokemon(pokeId) {
     fetchData();
   }, [pokeId]);
 
-  return { randomPokemon, isLoading, error };
+  return { randomPokemon, pokemonImage, isLoading, error };
 }
 
 function Fighter() {
   const [pokeId, setPokeId] = useState(Math.floor(Math.random() * 809) + 1);
-  const { randomPokemon, isLoading, error } = useGetPokemon(pokeId);
-
+  const { randomPokemon, pokemonImage, isLoading, error } =
+    useGetPokemonAndImage(pokeId);
+  //   const pokemonImage = useGetPokemonImage(randomPokemon.id);
+  const imgSource = pokemonImage.sprites?.other?.dream_world.front_default;
   const handleNewPokemon = () => {
     setPokeId(Math.floor(Math.random() * 809) + 1);
   };
-
-  useEffect(() => {
-    if (randomPokemon) {
-      console.log(randomPokemon);
-    }
-  }, [randomPokemon]);
-
+  console.log(randomPokemon.base_experience);
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
   if (error) {
     return <div>Error: {error}</div>;
   }
-
   if (!randomPokemon) {
     return <div>No Pokémon data available</div>;
   }
@@ -56,6 +53,11 @@ function Fighter() {
   return (
     <>
       <h2>{randomPokemon.name.english}</h2>
+      <img
+        src={imgSource}
+        // src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${randomPokemon.id}.svg`}
+        alt={randomPokemon.name.english}
+      />
       <div key={randomPokemon.id} id={randomPokemon.id}>
         <p>Attack: {randomPokemon.base.Attack}</p>
         <p>S-Attack: {randomPokemon.base["Sp. Attack"]}</p>
@@ -64,7 +66,7 @@ function Fighter() {
       <div>
         <p>Defense: {randomPokemon.base.Defense}</p>
         <p>S-Defense: {randomPokemon.base["Sp. Defense"]}</p>
-        <p>XP: {/* Insert XP value here if available */}</p>
+        <p>XP: {pokemonImage.base_experience}</p>
       </div>
       <p>HP: {randomPokemon.base.HP}</p>
       <button onClick={handleNewPokemon}>Get New Pokemon</button>
