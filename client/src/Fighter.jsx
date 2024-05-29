@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 function useGetPokemon(pokeId) {
-  const [randomPokemon, setRandomPokemon] = useState([]);
+  const [randomPokemon, setRandomPokemon] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -27,19 +27,19 @@ function useGetPokemon(pokeId) {
   return { randomPokemon, isLoading, error };
 }
 
-function Fighter() {
+function Fighter({ onPokemonChange }) {
   const [pokeId, setPokeId] = useState(Math.floor(Math.random() * 809) + 1);
   const { randomPokemon, isLoading, error } = useGetPokemon(pokeId);
+
+  useEffect(() => {
+    if (randomPokemon) {
+      onPokemonChange(randomPokemon.id); // Hier wird die ID an die übergeordnete Komponente übergeben
+    }
+  }, [randomPokemon, onPokemonChange]);
 
   const handleNewPokemon = () => {
     setPokeId(Math.floor(Math.random() * 809) + 1);
   };
-
-  useEffect(() => {
-    if (randomPokemon) {
-      console.log(randomPokemon);
-    }
-  }, [randomPokemon]);
 
   if (isLoading) {
     return <div>Loading...</div>;
