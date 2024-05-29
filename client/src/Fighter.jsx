@@ -34,12 +34,13 @@ function Fighter() {
   const [pokeId, setPokeId] = useState(Math.floor(Math.random() * 809) + 1);
   const { randomPokemon, pokemonImage, isLoading, error } =
     useGetPokemonAndImage(pokeId);
-  //   const pokemonImage = useGetPokemonImage(randomPokemon.id);
-  const imgSource = pokemonImage.sprites?.other?.dream_world.front_default;
+  const imgSource =
+    pokemonImage.sprites?.other?.dream_world.front_default ||
+    pokemonImage.sprites?.other?.home.front_default;
   const handleNewPokemon = () => {
     setPokeId(Math.floor(Math.random() * 809) + 1);
   };
-  console.log(randomPokemon.base_experience);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -52,24 +53,27 @@ function Fighter() {
 
   return (
     <>
-      <h2>{randomPokemon.name.english}</h2>
-      <img
-        src={imgSource}
-        // src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${randomPokemon.id}.svg`}
-        alt={randomPokemon.name.english}
-      />
       <div key={randomPokemon.id} id={randomPokemon.id}>
-        <p>Attack: {randomPokemon.base.Attack}</p>
-        <p>S-Attack: {randomPokemon.base["Sp. Attack"]}</p>
-        <p>Speed: {randomPokemon.base.Speed}</p>
+        <h2>{randomPokemon.name.english}</h2>
+        <img
+          src={imgSource}
+          // src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${randomPokemon.id}.svg`}
+          alt={randomPokemon.name.english}
+          width="100%"
+        />
+        <div>
+          <p>Attack: {randomPokemon.base.Attack}</p>
+          <p>S-Attack: {randomPokemon.base["Sp. Attack"]}</p>
+          <p>Speed: {randomPokemon.base.Speed}</p>
+        </div>
+        <div>
+          <p>Defense: {randomPokemon.base.Defense}</p>
+          <p>S-Defense: {randomPokemon.base["Sp. Defense"]}</p>
+          <p>XP: {pokemonImage.base_experience}</p>
+        </div>
+        <p>HP: {randomPokemon.base.HP}</p>
+        <button onClick={handleNewPokemon}>Get New Pokemon</button>
       </div>
-      <div>
-        <p>Defense: {randomPokemon.base.Defense}</p>
-        <p>S-Defense: {randomPokemon.base["Sp. Defense"]}</p>
-        <p>XP: {pokemonImage.base_experience}</p>
-      </div>
-      <p>HP: {randomPokemon.base.HP}</p>
-      <button onClick={handleNewPokemon}>Get New Pokemon</button>
     </>
   );
 }
