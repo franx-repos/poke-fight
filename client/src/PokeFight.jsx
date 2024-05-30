@@ -24,13 +24,11 @@ function PokeFight() {
 
   return (
     <>
-      <div>PokeFight</div>
       {isLoading ? (
         <div>Loading...</div>
       ) : (
         <>
-          {" "}
-          <div className="fightercontainer">
+          <div className="arena">
             <Fighter pokeId={fighter1Id} onPokemonChange={setFighter1Id} />
             <FightButton
               pokeId1={fighter1Id}
