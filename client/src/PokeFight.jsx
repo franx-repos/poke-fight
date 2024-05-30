@@ -13,8 +13,10 @@ function PokeFight() {
   return (
     <>
       <div>PokeFight</div>
-      <Fighter availablePokemons={pokeAmount} />
-      <Fighter />
+      <div className="fightercontainer">
+        <Fighter availablePokemons={pokeAmount} />
+        <Fighter />
+      </div>
     </>
   );
 }

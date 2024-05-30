@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import * as React from "react";
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Grid,
+  Button,
+} from "@mui/material";
 
 function useGetPokemonAndImage(pokeId) {
   const [randomPokemon, setRandomPokemon] = useState([]);
@@ -52,29 +61,83 @@ function Fighter() {
   }
 
   return (
-    <>
-      <div key={randomPokemon.id} id={randomPokemon.id}>
-        <h2>{randomPokemon.name.english}</h2>
-        <img
-          src={imgSource}
-          // src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${randomPokemon.id}.svg`}
-          alt={randomPokemon.name.english}
-          width="100%"
-        />
-        <div>
-          <p>Attack: {randomPokemon.base.Attack}</p>
-          <p>S-Attack: {randomPokemon.base["Sp. Attack"]}</p>
-          <p>Speed: {randomPokemon.base.Speed}</p>
-        </div>
-        <div>
-          <p>Defense: {randomPokemon.base.Defense}</p>
-          <p>S-Defense: {randomPokemon.base["Sp. Defense"]}</p>
-          <p>XP: {pokemonImage.base_experience}</p>
-        </div>
-        <p>HP: {randomPokemon.base.HP}</p>
-        <button onClick={handleNewPokemon}>Get New Pokemon</button>
-      </div>
-    </>
+    <Card
+      key={randomPokemon.id}
+      id={randomPokemon.id}
+      sx={{
+        minWidth: "40%",
+        minHeight: "70%",
+        margin: "auto",
+        backgroundColor: "Black",
+        color: "white",
+      }}>
+      <CardMedia
+        component="img"
+        alt={randomPokemon.name.senglish}
+        height="300"
+        image={imgSource}
+      />
+
+      <CardContent
+        sx={{
+          backgroundColor: "black",
+        }}>
+        <Typography gutterBottom variant="h5" component="div">
+          {randomPokemon.name.english}
+        </Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ color: "white" }}>
+              Attack: {randomPokemon.base.Attack}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ color: "white" }}>
+              S-Attack: {randomPokemon.base["Sp. Attack"]}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ color: "white" }}>
+              Speed: {randomPokemon.base.Speed}
+            </Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ color: "white" }}>
+              Defense: {randomPokemon.base.Defense}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ color: "white" }}>
+              S-Defense: {randomPokemon.base["Sp. Defense"]}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ color: "white" }}>
+              XP: {pokemonImage.base_experience}
+            </Typography>
+          </Grid>
+        </Grid>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ color: "white" }}>
+          HP: {randomPokemon.base.HP}
+        </Typography>
+      </CardContent>
+      <Button size="small" sx={{ color: "white" }} onClick={handleNewPokemon}>
+        Get New Pokemon
+      </Button>
+    </Card>
   );
 }
 

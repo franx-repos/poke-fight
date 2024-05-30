@@ -5,6 +5,12 @@
   text-align: center;
 }
 
+/*  Beide pokemon auf verschiedene seiten  */
+.fightercontainer {
+  display: flex;
+  justify-content: space-around;
+}
+
 /* shake animation */
 
 img:hover {
