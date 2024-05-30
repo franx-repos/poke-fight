@@ -13,6 +13,7 @@ import {
 function useGetPokemonAndImage(pokeId) {
   const [randomPokemon, setRandomPokemon] = useState([]);
   const [pokemonImage, setPokemonImage] = useState({});
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -39,13 +40,20 @@ function useGetPokemonAndImage(pokeId) {
   return { randomPokemon, pokemonImage, isLoading, error };
 }
 
-function Fighter() {
+function Fighter({ onPokemonChange }) {
   const [pokeId, setPokeId] = useState(Math.floor(Math.random() * 809) + 1);
   const { randomPokemon, pokemonImage, isLoading, error } =
     useGetPokemonAndImage(pokeId);
+
+  useEffect(() => {
+    if (randomPokemon) {
+      onPokemonChange(randomPokemon.id); // Hier wird die ID an die übergeordnete Komponente übergeben
+    }
+  }, [randomPokemon, onPokemonChange]);
+
   const imgSource =
-    pokemonImage.sprites?.other?.dream_world.front_default ||
-    pokemonImage.sprites?.other?.home.front_default;
+    pokemonImage?.sprites?.other?.dream_world.front_default ||
+    pokemonImage?.sprites?.other?.home.front_default;
   const handleNewPokemon = () => {
     setPokeId(Math.floor(Math.random() * 809) + 1);
   };
