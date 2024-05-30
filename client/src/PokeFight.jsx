@@ -29,14 +29,17 @@ function PokeFight() {
         <div>Loading...</div>
       ) : (
         <>
-          <Fighter pokeId={fighter1Id} onPokemonChange={setFighter1Id} />
-          <Fighter pokeId={fighter2Id} onPokemonChange={setFighter2Id} />
-          <FightButton
-            pokeId1={fighter1Id}
-            pokeId2={fighter2Id}
-            pokemons={pokemons}
-            setWinner={setWinner}
-          />
+          {" "}
+          <div className="fightercontainer">
+            <Fighter pokeId={fighter1Id} onPokemonChange={setFighter1Id} />
+            <FightButton
+              pokeId1={fighter1Id}
+              pokeId2={fighter2Id}
+              pokemons={pokemons}
+              setWinner={setWinner}
+            />
+            <Fighter pokeId={fighter2Id} onPokemonChange={setFighter2Id} />
+          </div>
         </>
       )}
     </>

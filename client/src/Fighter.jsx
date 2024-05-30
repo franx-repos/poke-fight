@@ -76,19 +76,23 @@ function Fighter({ onPokemonChange }) {
         minWidth: "40%",
         minHeight: "70%",
         margin: "auto",
-        backgroundColor: "Black",
+        backgroundColor: "rgba(0, 0, 0, 0.6)",
         color: "white",
       }}>
       <CardMedia
         component="img"
-        alt={randomPokemon.name.senglish}
-        height="300"
+        alt={randomPokemon.name.english}
         image={imgSource}
+        sx={{
+          height: 300,
+          width: "100%",
+          objectFit: "contain",
+        }}
       />
 
       <CardContent
         sx={{
-          backgroundColor: "black",
+          backgroundColor: "rgba(0, 0, 0, 0.8) ",
         }}>
         <Typography gutterBottom variant="h5" component="div">
           {randomPokemon.name.english}
