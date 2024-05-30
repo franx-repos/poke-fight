@@ -58,6 +58,7 @@ function Fighter() {
         <img
           src={imgSource}
           // src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${randomPokemon.id}.svg`}
+          //   src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/823.gif"
           alt={randomPokemon.name.english}
           width="100%"
         />

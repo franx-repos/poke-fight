@@ -4,7 +4,14 @@
   padding: 2rem;
   text-align: center;
 }
-
+.arena {
+  display: flex;
+}
+img {
+  height: 300px;
+  object-fit: contain;
+  width: 95%;
+}
 /* shake animation */
 
 img:hover {
