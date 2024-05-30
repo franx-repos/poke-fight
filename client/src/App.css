@@ -4,14 +4,13 @@
   padding: 2rem;
   text-align: center;
 }
-.arena {
+
+/*  Beide pokemon auf verschiedene seiten  */
+.fightercontainer {
   display: flex;
+  justify-content: space-around;
 }
-img {
-  height: 300px;
-  object-fit: contain;
-  width: 95%;
-}
+
 /* shake animation */
 
 img:hover {
