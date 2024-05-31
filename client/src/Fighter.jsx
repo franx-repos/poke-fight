@@ -75,10 +75,26 @@ function Fighter({ onPokemonChange }) {
       sx={{
         minWidth: "40%",
         minHeight: "70%",
-        margin: "auto",
-        backgroundColor: "rgba(0, 0, 0, 0.6)",
+        margin: "3rem",
+        backgroundColor: "rgba(0, 0, 0, 0.7)",
         color: "white",
-      }}>
+      }}
+    >
+      <Typography
+        className="headline"
+        gutterBottom
+        variant="h4"
+        component="div"
+        sx={{
+          backgroundColor: "rgba(0, 0, 0, 0.8) ",
+        }}
+        padding="1rem"
+        fontFamily="'Pokemon Solid', sans-serif"
+        letterSpacing=".2rem"
+        color="#FFCD09"
+      >
+        {randomPokemon.name.english}
+      </Typography>
       <CardMedia
         component="img"
         alt={randomPokemon.name.english}
@@ -87,6 +103,7 @@ function Fighter({ onPokemonChange }) {
           height: 300,
           width: "100%",
           objectFit: "contain",
+          marginBottom: "1rem",
         }}
         // src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${randomPokemon.id}.svg`}
         //   src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/823.gif"
@@ -95,28 +112,35 @@ function Fighter({ onPokemonChange }) {
       <CardContent
         sx={{
           backgroundColor: "rgba(0, 0, 0, 0.8) ",
-        }}>
-        <Typography gutterBottom variant="h5" component="div">
-          {randomPokemon.name.english}
-        </Typography>
+        }}
+      >
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{ color: "white" }}>
+              sx={{ color: "white" }}
+              textAlign="left"
+              paddingLeft="1rem"
+            >
               Attack: {randomPokemon.base.Attack}
             </Typography>
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{ color: "white" }}>
+              sx={{ color: "white" }}
+              textAlign="left"
+              paddingLeft="1rem"
+            >
               S-Attack: {randomPokemon.base["Sp. Attack"]}
             </Typography>
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{ color: "white" }}>
+              sx={{ color: "white" }}
+              textAlign="left"
+              paddingLeft="1rem"
+            >
               Speed: {randomPokemon.base.Speed}
             </Typography>
           </Grid>
@@ -124,19 +148,28 @@ function Fighter({ onPokemonChange }) {
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{ color: "white" }}>
+              sx={{ color: "white" }}
+              textAlign="left"
+              paddingLeft="1rem"
+            >
               Defense: {randomPokemon.base.Defense}
             </Typography>
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{ color: "white" }}>
+              sx={{ color: "white" }}
+              textAlign="left"
+              paddingLeft="1rem"
+            >
               S-Defense: {randomPokemon.base["Sp. Defense"]}
             </Typography>
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{ color: "white" }}>
+              sx={{ color: "white" }}
+              textAlign="left"
+              paddingLeft="1rem"
+            >
               XP: {pokemonImage.base_experience}
             </Typography>
           </Grid>
@@ -144,11 +177,18 @@ function Fighter({ onPokemonChange }) {
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ color: "white" }}>
+          sx={{ color: "white" }}
+          paddingTop="1rem"
+        >
           HP: {randomPokemon.base.HP}
         </Typography>
       </CardContent>
-      <Button size="small" sx={{ color: "white" }} onClick={handleNewPokemon}>
+      <Button
+        size="large"
+        sx={{ color: "white" }}
+        padding="1rem"
+        onClick={handleNewPokemon}
+      >
         Get New Pokemon
       </Button>
     </Card>
