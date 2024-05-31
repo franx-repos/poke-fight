@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import useFetchData from "./FetchData";
 import Fighter from "./Fighter";
 import FightButton from "./FightButton";
+import "./App.css"
 
 function PokeFight() {
   const { pokemons, isLoading } = useFetchData();
