@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./App.css"
 
 function FightButton({ pokeId1, pokeId2, pokemons, setWinner }) {
   const [fightResult, setFightResult] = useState(null);
@@ -43,7 +44,8 @@ function FightButton({ pokeId1, pokeId2, pokemons, setWinner }) {
   return (
     <div>
       <button onClick={handleFight}>Kampf Starten</button>
-      {fightResult && <div>{fightResult}</div>}
+      {fightResult && <div>
+        <h1 class="highlight">{fightResult}</h1></div>}
     </div>
   );
 }
