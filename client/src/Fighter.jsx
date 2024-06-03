@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-// import axios from "axios";
 import useGetPokemonAndImage from "./GetNewPokemon";
 import * as React from "react";
 import {
@@ -14,36 +13,6 @@ import { styled } from "@mui/material/styles";
 import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
-
-// function useGetPokemonAndImage(pokeId) {
-//   const [randomPokemon, setRandomPokemon] = useState([]);
-//   const [pokemonImage, setPokemonImage] = useState({});
-
-//   const [isLoading, setIsLoading] = useState(true);
-//   const [error, setError] = useState("");
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       setIsLoading(true);
-//       try {
-//         const [pokemonResponse, imageResponse] = await Promise.all([
-//           axios.get(`http://localhost:8000/pokemons/${pokeId}`),
-//           axios.get(`https://pokeapi.co/api/v2/pokemon/${pokeId}`),
-//         ]);
-//         setRandomPokemon(pokemonResponse.data);
-//         setPokemonImage(imageResponse.data);
-//         setIsLoading(false);
-//       } catch (error) {
-//         setError(error.message);
-//         console.error(error);
-//         setIsLoading(false);
-//       }
-//     };
-//     fetchData();
-//   }, [pokeId]);
-
-//   return { randomPokemon, pokemonImage, isLoading, error };
-// }
 
 function Fighter({ onPokemonChange }) {
   const [pokeId, setPokeId] = useState(Math.floor(Math.random() * 809) + 1);
