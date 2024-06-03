@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import Box from "@mui/material/Box";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
 
 function FightButton({ pokeId1, pokeId2, pokemons, setWinner }) {
   const [fightResult, setFightResult] = useState([]);
@@ -77,7 +80,7 @@ function FightButton({ pokeId1, pokeId2, pokemons, setWinner }) {
           clearInterval(interval);
           return;
         }
-      }, 1000); // Interval of 500ms for each step in the fight
+      }, 1500);
     }
     return () => clearInterval(interval);
   }, [isFighting, pokeId1, pokeId2, pokemons, setWinner]);
@@ -100,21 +103,28 @@ function FightButton({ pokeId1, pokeId2, pokemons, setWinner }) {
   };
 
   return (
-    <div>
+    <Box
+      className="highlight"
+      component="section"
+      sx={{ p: 5, marginTop: 6 }}
+      minWidth="35%"
+      height="36.5rem"
+      overflow={"auto"}
+    >
+      {fightResult.length > 0 && (
+        <Box component="section">
+          <h2>Battle course:</h2>
+          <List>
+            {fightResult.map((entry, index) => (
+              <ListItem key={index}>{entry}</ListItem>
+            ))}
+          </List>
+        </Box>
+      )}
       <button onClick={handleFight} disabled={isFighting}>
         Fight
       </button>
-      {fightResult.length > 0 && (
-        <div>
-          <h1 className="highlight">Battle course:</h1>
-          <ul className="highlight">
-            {fightResult.map((entry, index) => (
-              <li key={index}>{entry}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+    </Box>
   );
 }
 

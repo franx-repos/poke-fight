@@ -78,8 +78,8 @@ img:hover {
   }
 }
 .highlight {
-  background-color: #ffcc00; /* Gelbe Hintergrundfarbe */
-  color: #000; /* Schwarzer Text */
-  padding: 10px; /* Innenabstand */
-  border-radius: 5px; /* Abgerundete Ecken */
+  background-color: #ffcc00;
+  color: #000;
+  padding: 10px;
+  border-radius: 5px;
 }

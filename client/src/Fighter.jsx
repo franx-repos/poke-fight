@@ -32,9 +32,13 @@ function Fighter({ onPokemonChange }) {
     setPokeId(Math.floor(Math.random() * 809) + 1);
   };
 
-  const [progress, setProgress] = useState(100);
+  const [progress, setProgress] = useState(null);
 
   useEffect(() => {
+    // if (randomPokemon) {
+    //   console.log(randomPokemon.base.HP);
+    //   setProgress(randomPokemon.base.HP);
+    // }
     const timer = setInterval(() => {
       setProgress((oldProgress) => {
         if (oldProgress <= 0) {
@@ -44,11 +48,10 @@ function Fighter({ onPokemonChange }) {
         return Math.min(oldProgress - diff, 100);
       });
     }, 1000);
-
     return () => {
       clearInterval(timer);
     };
-  }, []);
+  }, [randomPokemon, onPokemonChange]);
 
   const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 10,

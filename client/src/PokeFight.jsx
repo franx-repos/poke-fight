@@ -1,26 +1,17 @@
 import React, { useState, useEffect } from "react";
-import useFetchData from "./FetchData";
+import useGetPokemonAndImage from "./GetNewPokemon";
 import Fighter from "./Fighter";
 import FightButton from "./FightButton";
 
 function PokeFight() {
-  const { pokemons, isLoading } = useFetchData();
-  const [fighter1Id, setFighter1Id] = useState(null);
-  const [fighter2Id, setFighter2Id] = useState(null);
+  // const { pokemons, isLoading } = useFetchData();
+  const [fighter1, setFighter1] = useState({});
+  const [fighter2, setFighter2] = useState({});
   const [winner, setWinner] = useState(null);
 
   useEffect(() => {
-    if (!isLoading && pokemons.length > 1) {
-      const randomIndex1 = Math.floor(Math.random() * pokemons.length);
-      let randomIndex2;
-      do {
-        randomIndex2 = Math.floor(Math.random() * pokemons.length);
-      } while (randomIndex1 === randomIndex2);
-
-      setFighter1Id(pokemons[randomIndex1].id);
-      setFighter2Id(pokemons[randomIndex2].id);
-    }
-  }, [pokemons, isLoading]);
+    setFighter1(useGetPokemonAndImage(Math.floor(Math.random() * 809) + 1));
+  }, [fighter1, fighter2, isLoading]);
 
   return (
     <>
@@ -29,14 +20,14 @@ function PokeFight() {
       ) : (
         <>
           <div className="arena fightercontainer">
-            <Fighter pokeId={fighter1Id} onPokemonChange={setFighter1Id} />
+            <Fighter pokeId={fighter1} onPokemonChange={setFighter1} />
             <FightButton
-              pokeId1={fighter1Id}
-              pokeId2={fighter2Id}
-              pokemons={pokemons}
+              pokeId1={fighter1}
+              pokeId2={fighter2}
+              // pokemons={pokemons}
               setWinner={setWinner}
             />
-            <Fighter pokeId={fighter2Id} onPokemonChange={setFighter2Id} />
+            <Fighter pokeId={fighter2} onPokemonChange={setFighter2} />
           </div>
         </>
       )}
