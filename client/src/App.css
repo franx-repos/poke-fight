@@ -24,6 +24,10 @@
   -webkit-text-stroke-color: #2a6fb7;
 }
 
+.tablecell {
+  color: white;
+}
+
 /* shake animation */
 
 img:hover {
