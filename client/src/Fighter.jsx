@@ -110,8 +110,6 @@ function Fighter({ onPokemonChange }) {
           objectFit: "contain",
           marginBottom: "1rem",
         }}
-        // src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${randomPokemon.id}.svg`}
-        //   src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/823.gif"
       />
 
       <CardContent
