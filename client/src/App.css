@@ -23,6 +23,13 @@
   -webkit-text-stroke-width: 2px;
   -webkit-text-stroke-color: #2a6fb7;
 }
+/* .menu-item::before {
+  content: url("assets/Arena.PNG");
+  display: flex;
+  width: 25px;
+  height: 25px;
+  margin-right: 5px;
+} */
 
 /* shake animation */
 
@@ -65,7 +72,6 @@ img:hover {
   100% {
     transform: translate(1px, -2px) rotate(-1deg);
   }
-  
 }
 .highlight {
   background-color: #ffcc00; /* Gelbe Hintergrundfarbe */

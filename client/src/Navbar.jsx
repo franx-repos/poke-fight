@@ -24,8 +24,8 @@ function Navbar() {
         >
           PokeFight
         </Typography>
-        <Box sx={{ display: "flex" }}>
-          <img src="./assets/Arena.png" alt="" />
+
+        <Box sx={{ display: "flex" }} className="menu-item">
           <Button
             component={NavLink}
             to="/"
@@ -35,7 +35,7 @@ function Navbar() {
               position: "relativ",
               right: "90%",
             }}
-            exact
+            // exact
           >
             Arena
           </Button>
