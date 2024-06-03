@@ -31,6 +31,10 @@
   margin-right: 5px;
 } */
 
+.tablecell {
+  color: white;
+}
+
 /* shake animation */
 
 img:hover {
