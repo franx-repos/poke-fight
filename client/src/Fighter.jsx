@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import useGetPokemonAndImage from "./GetNewPokemon";
 import * as React from "react";
 import {
   Card,
@@ -9,36 +9,10 @@ import {
   Grid,
   Button,
 } from "@mui/material";
-
-function useGetPokemonAndImage(pokeId) {
-  const [randomPokemon, setRandomPokemon] = useState([]);
-  const [pokemonImage, setPokemonImage] = useState({});
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const [pokemonResponse, imageResponse] = await Promise.all([
-          axios.get(`http://localhost:8000/pokemons/${pokeId}`),
-          axios.get(`https://pokeapi.co/api/v2/pokemon/${pokeId}`),
-        ]);
-        setRandomPokemon(pokemonResponse.data);
-        setPokemonImage(imageResponse.data);
-        setIsLoading(false);
-      } catch (error) {
-        setError(error.message);
-        console.error(error);
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, [pokeId]);
-
-  return { randomPokemon, pokemonImage, isLoading, error };
-}
+import { styled } from "@mui/material/styles";
+import LinearProgress, {
+  linearProgressClasses,
+} from "@mui/material/LinearProgress";
 
 function Fighter({ onPokemonChange }) {
   const [pokeId, setPokeId] = useState(Math.floor(Math.random() * 809) + 1);
@@ -57,6 +31,37 @@ function Fighter({ onPokemonChange }) {
   const handleNewPokemon = () => {
     setPokeId(Math.floor(Math.random() * 809) + 1);
   };
+
+  const [progress, setProgress] = useState(100);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress <= 0) {
+          return 100;
+        }
+        const diff = Math.random() * 10;
+        return Math.min(oldProgress - diff, 100);
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+    height: 10,
+    borderRadius: 5,
+    [`&.${linearProgressClasses.colorPrimary}`]: {
+      backgroundColor:
+        theme.palette.grey[theme.palette.mode === "light" ? 200 : 800],
+    },
+    [`& .${linearProgressClasses.bar}`]: {
+      borderRadius: 5,
+      backgroundColor: theme.palette.mode === "light" ? "#1a90ff" : "#308fe8",
+    },
+  }));
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -174,6 +179,7 @@ function Fighter({ onPokemonChange }) {
             </Typography>
           </Grid>
         </Grid>
+
         <Typography
           variant="body2"
           color="text.secondary"
@@ -182,6 +188,7 @@ function Fighter({ onPokemonChange }) {
         >
           HP: {randomPokemon.base.HP}
         </Typography>
+        <BorderLinearProgress variant="determinate" value={progress} />
       </CardContent>
       <Button
         size="large"
