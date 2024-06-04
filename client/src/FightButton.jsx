@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 
-function FightButton({ pokeId1, pokeId2, pokemons, setWinner }) {
+function FightButton({ poke1, poke2, setWinner }) {
   const [fightResult, setFightResult] = useState([]);
   const [isFighting, setIsFighting] = useState(false);
 
@@ -30,9 +30,6 @@ function FightButton({ pokeId1, pokeId2, pokemons, setWinner }) {
     let interval;
     if (isFighting) {
       interval = setInterval(() => {
-        const poke1 = pokemons.find((poke) => poke.id === pokeId1);
-        const poke2 = pokemons.find((poke) => poke.id === pokeId2);
-
         if (!poke1 || !poke2) {
           console.error("Fehler: Pokémon-Daten sind nicht verfügbar.");
           clearInterval(interval);
@@ -83,12 +80,9 @@ function FightButton({ pokeId1, pokeId2, pokemons, setWinner }) {
       }, 1500);
     }
     return () => clearInterval(interval);
-  }, [isFighting, pokeId1, pokeId2, pokemons, setWinner]);
+  }, [isFighting, poke1, poke2, setWinner]);
 
   const handleFight = () => {
-    const poke1 = pokemons.find((poke) => poke.id === pokeId1);
-    const poke2 = pokemons.find((poke) => poke.id === pokeId2);
-
     if (!poke1 || !poke2) {
       console.error("Fehler: Pokémon-Daten sind nicht verfügbar.");
       return;
