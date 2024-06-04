@@ -20,10 +20,12 @@ function Navbar() {
             left: "50%",
             transform: "translateX(-50%)",
             mt: -2,
-          }}>
+          }}
+        >
           PokeFight
         </Typography>
-        <Box sx={{ display: "flex" }}>
+
+        <Box sx={{ display: "flex" }} className="menu-item">
           <Button
             component={NavLink}
             to="/"
@@ -33,7 +35,8 @@ function Navbar() {
               position: "relativ",
               right: "90%",
             }}
-            exact>
+            // exact
+          >
             Arena
           </Button>
           <Button
@@ -44,7 +47,8 @@ function Navbar() {
               textDecoration: "none",
               position: "relative",
               right: "25%",
-            }}>
+            }}
+          >
             Leaderboard
           </Button>
         </Box>

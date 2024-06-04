@@ -23,6 +23,13 @@
   -webkit-text-stroke-width: 2px;
   -webkit-text-stroke-color: #2a6fb7;
 }
+/* .menu-item::before {
+  content: url("assets/Arena.PNG");
+  display: flex;
+  width: 25px;
+  height: 25px;
+  margin-right: 5px;
+} */
 
 .tablecell {
   color: white;
@@ -69,11 +76,10 @@ img:hover {
   100% {
     transform: translate(1px, -2px) rotate(-1deg);
   }
-  
 }
 .highlight {
-  background-color: #ffcc00; /* Gelbe Hintergrundfarbe */
-  color: #000; /* Schwarzer Text */
-  padding: 10px; /* Innenabstand */
-  border-radius: 5px; /* Abgerundete Ecken */
+  background-color: #ffcc00;
+  color: #000;
+  padding: 10px;
+  border-radius: 5px;
 }

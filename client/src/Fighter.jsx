@@ -14,23 +14,22 @@ import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
 
-function Fighter({ onPokemonChange }) {
-  const [pokeId, setPokeId] = useState(Math.floor(Math.random() * 809) + 1);
-  const { randomPokemon, pokemonImage, isLoading, error } =
-    useGetPokemonAndImage(pokeId);
-
-  useEffect(() => {
-    if (randomPokemon) {
-      onPokemonChange(randomPokemon.id); // Hier wird die ID an die übergeordnete Komponente übergeben
-    }
-  }, [randomPokemon, onPokemonChange]);
-
+function Fighter({
+  id,
+  name,
+  img,
+  attack,
+  spAttack,
+  speed,
+  defense,
+  spDefense,
+  experience,
+  hp,
+  setNewPlayer,
+}) {
   const imgSource =
-    pokemonImage?.sprites?.other?.dream_world.front_default ||
-    pokemonImage?.sprites?.other?.home.front_default;
-  const handleNewPokemon = () => {
-    setPokeId(Math.floor(Math.random() * 809) + 1);
-  };
+    img?.sprites?.other?.dream_world.front_default ||
+    img?.sprites?.other?.home.front_default;
 
   const [progress, setProgress] = useState(100);
 
@@ -63,20 +62,10 @@ function Fighter({ onPokemonChange }) {
     },
   }));
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-  if (!randomPokemon) {
-    return <div>No Pokémon data available</div>;
-  }
-
   return (
     <Card
-      key={randomPokemon.id}
-      id={randomPokemon.id}
+      key={id}
+      id={id}
       sx={{
         minWidth: "40%",
         minHeight: "70%",
@@ -98,11 +87,11 @@ function Fighter({ onPokemonChange }) {
         letterSpacing=".2rem"
         color="#FFCD09"
       >
-        {randomPokemon.name.english}
+        {name}
       </Typography>
       <CardMedia
         component="img"
-        alt={randomPokemon.name.english}
+        alt={name}
         image={imgSource}
         sx={{
           height: 300,
@@ -110,8 +99,6 @@ function Fighter({ onPokemonChange }) {
           objectFit: "contain",
           marginBottom: "1rem",
         }}
-        // src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${randomPokemon.id}.svg`}
-        //   src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/823.gif"
       />
 
       <CardContent
@@ -128,7 +115,7 @@ function Fighter({ onPokemonChange }) {
               textAlign="left"
               paddingLeft="1rem"
             >
-              Attack: {randomPokemon.base.Attack}
+              Attack: {attack}
             </Typography>
             <Typography
               variant="body2"
@@ -137,7 +124,7 @@ function Fighter({ onPokemonChange }) {
               textAlign="left"
               paddingLeft="1rem"
             >
-              S-Attack: {randomPokemon.base["Sp. Attack"]}
+              S-Attack: {spAttack}
             </Typography>
             <Typography
               variant="body2"
@@ -146,7 +133,7 @@ function Fighter({ onPokemonChange }) {
               textAlign="left"
               paddingLeft="1rem"
             >
-              Speed: {randomPokemon.base.Speed}
+              Speed: {speed}
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -157,7 +144,7 @@ function Fighter({ onPokemonChange }) {
               textAlign="left"
               paddingLeft="1rem"
             >
-              Defense: {randomPokemon.base.Defense}
+              Defense: {defense}
             </Typography>
             <Typography
               variant="body2"
@@ -166,7 +153,7 @@ function Fighter({ onPokemonChange }) {
               textAlign="left"
               paddingLeft="1rem"
             >
-              S-Defense: {randomPokemon.base["Sp. Defense"]}
+              S-Defense: {spDefense}
             </Typography>
             <Typography
               variant="body2"
@@ -175,7 +162,7 @@ function Fighter({ onPokemonChange }) {
               textAlign="left"
               paddingLeft="1rem"
             >
-              XP: {pokemonImage.base_experience}
+              XP: {experience}
             </Typography>
           </Grid>
         </Grid>
@@ -186,7 +173,7 @@ function Fighter({ onPokemonChange }) {
           sx={{ color: "white" }}
           paddingTop="1rem"
         >
-          HP: {randomPokemon.base.HP}
+          HP: {hp}
         </Typography>
         <BorderLinearProgress variant="determinate" value={progress} />
       </CardContent>
@@ -194,7 +181,7 @@ function Fighter({ onPokemonChange }) {
         size="large"
         sx={{ color: "white" }}
         padding="1rem"
-        onClick={handleNewPokemon}
+        onClick={setNewPlayer}
       >
         Get New Pokemon
       </Button>
