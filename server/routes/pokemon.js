@@ -3,16 +3,16 @@ const router = express.Router();
 const axios = require('axios');
 const Pokemon = require('../models/Pokemon');
 
-// Endpunkt zum Abrufen eines Pokémon
+// Abrufen eines Pokémon
 router.get('/:id', async (req, res) => {
   try {
     let pokemon = await Pokemon.findOne({ id: req.params.id });
     if (!pokemon) {
-      // Pokémon existiert nicht in der Datenbank, von der API abrufen
+     
       const response = await axios.get(`../data.js/${req.params.id}`);
       const apiData = response.data;
 
-      // Neues Pokémon-Dokument erstellen
+      // Neue Pokémon Daten 
       pokemon = new Pokemon({
         id: apiData.id,
         xp: 0,
@@ -28,7 +28,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Endpunkt zum Aktualisieren eines Pokémon
+//neue Werte ERfahrung des Pokemons
 router.put('/:id', async (req, res) => {
   try {
     const { xp, wins, losses } = req.body;
