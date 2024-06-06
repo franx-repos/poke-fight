@@ -1,6 +1,7 @@
 import express from "express";
 import pokemons from "./data.js";
 import cors from "cors";
+import mongoose from "mongoose";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
