@@ -1,20 +1,23 @@
-const express = require('express');
-const router = express.Router();
-const axios = require('axios');
-const Pokemon = require('../models/Pokemon');
+import express from 'express';
+import Pokemon from '../models/Pokemon.js';
+import pokemons from '../data.js';
 
-// Abrufen eines Pokémon
+const router = express.Router();
+
+// Endpunkt zum Abrufen eines Pokémon
 router.get('/:id', async (req, res) => {
   try {
-    let pokemon = await Pokemon.findOne({ id: req.params.id });
-    if (!pokemon) {
-     
-      const response = await axios.get(`../data.js/${req.params.id}`);
-      const apiData = response.data;
+    const id = parseInt(req.params.id, 10);
+    const pokemonFromFile = pokemons.find(pokemon => pokemon.id === id);
+    if (!pokemonFromFile) {
+      return res.status(404).send({ error: "Pokémon not found" });
+    }
 
-      // Neue Pokémon Daten 
+    let pokemon = await Pokemon.findOne({ id: id });
+    if (!pokemon) {
+      // Neues Pokémon-Dokument erstellen
       pokemon = new Pokemon({
-        id: apiData.id,
+        id: id,
         xp: 0,
         wins: 0,
         losses: 0
@@ -22,15 +25,22 @@ router.get('/:id', async (req, res) => {
 
       await pokemon.save();
     }
-    res.json(pokemon);
+
+    res.json({
+      ...pokemonFromFile,
+      xp: pokemon.xp,
+      wins: pokemon.wins,
+      losses: pokemon.losses
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-//neue Werte ERfahrung des Pokemons
+// Endpunkt zum Aktualisieren eines Pokémon
 router.put('/:id', async (req, res) => {
   try {
+    const id = parseInt(req.params.id, 10);
     const { xp, wins, losses } = req.body;
     const updateFields = {};
     if (xp !== undefined) updateFields.xp = xp;
@@ -38,7 +48,7 @@ router.put('/:id', async (req, res) => {
     if (losses !== undefined) updateFields.losses = losses;
 
     const updatedPokemon = await Pokemon.findOneAndUpdate(
-      { id: req.params.id },
+      { id: id },
       { $inc: updateFields },
       { new: true }
     );
@@ -48,4 +58,4 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
