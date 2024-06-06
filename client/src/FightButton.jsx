@@ -3,9 +3,10 @@ import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 
-function FightButton({ poke1, poke2, setWinner }) {
+function FightButton({ poke1, poke2, setWinner, setStatus }) {
   const [fightResult, setFightResult] = useState([]);
   const [isFighting, setIsFighting] = useState(false);
+  const [turn, setTurn] = useState(0);
 
   const calculateDamage = (attack, defense, baseDamage = 10) => {
     return Math.floor(
@@ -40,47 +41,39 @@ function FightButton({ poke1, poke2, setWinner }) {
         const [first, second] =
           poke1.base.Speed > poke2.base.Speed ? [poke1, poke2] : [poke2, poke1];
 
-        // First attack
-        const firstAttackType = Math.random() < 0.5 ? "physical" : "special";
-        let damage = attack(first, second, firstAttackType);
+        // Determine current attacker and defender based on the turn
+        const attacker = turn % 2 === 0 ? first : second;
+        const defender = turn % 2 === 0 ? second : first;
+
+        // Perform attack
+        const attackType = Math.random() < 0.5 ? "physical" : "special";
+        const damage = attack(attacker, defender, attackType);
+
+        // Set status
+        setStatus(attacker.name.english, defender.name.english);
+
         setFightResult((prevLog) => [
           ...prevLog,
-          `${first.name.english} attacks ${second.name.english} with a ${firstAttackType} attack causing ${damage} damage. ${second.name.english} HP is now ${second.currentHP}`,
+          `${attacker.name.english} attacks ${defender.name.english} with a ${attackType} attack causing ${damage} damage. ${defender.name.english} HP is now ${defender.currentHP}`,
         ]);
 
-        if (second.currentHP <= 0) {
+        if (defender.currentHP <= 0) {
           setFightResult((prevLog) => [
             ...prevLog,
-            `${second.name.english} is defeated. ${first.name.english} wins!`,
+            `${defender.name.english} is defeated. ${attacker.name.english} wins!`,
           ]);
-          setWinner(first.name.english);
+          setWinner(attacker.name.english);
           setIsFighting(false);
           clearInterval(interval);
           return;
         }
 
-        // Second attack
-        const secondAttackType = Math.random() < 0.5 ? "physical" : "special";
-        damage = attack(second, first, secondAttackType);
-        setFightResult((prevLog) => [
-          ...prevLog,
-          `${second.name.english} attacks ${first.name.english} with a ${secondAttackType} attack causing ${damage} damage. ${first.name.english} HP is now ${first.currentHP}`,
-        ]);
-
-        if (first.currentHP <= 0) {
-          setFightResult((prevLog) => [
-            ...prevLog,
-            `${first.name.english} is defeated. ${second.name.english} wins!`,
-          ]);
-          setWinner(second.name.english);
-          setIsFighting(false);
-          clearInterval(interval);
-          return;
-        }
+        // Update turn for the next attack
+        setTurn((prevTurn) => prevTurn + 1);
       }, 1500);
     }
     return () => clearInterval(interval);
-  }, [isFighting, poke1, poke2, setWinner]);
+  }, [isFighting, poke1, poke2, turn, setWinner, setStatus]);
 
   const handleFight = () => {
     if (!poke1 || !poke2) {
@@ -94,6 +87,7 @@ function FightButton({ poke1, poke2, setWinner }) {
 
     setFightResult([]);
     setIsFighting(true);
+    setTurn(0); // Reset turn
   };
 
   return (

@@ -13,6 +13,10 @@ function PokeFight() {
     Math.floor(Math.random() * 809) + 1
   );
   const [winner, setWinner] = useState(null);
+  const [attackerStatus, setAttackerStatus] = useState("");
+  const [defenderStatus, setDefenderStatus] = useState("");
+  const [currentHp1, setCurrentHp1] = useState(null);
+  const [currentHp2, setCurrentHp2] = useState(null);
 
   const {
     randomPokemon: fighter1,
@@ -37,8 +41,6 @@ function PokeFight() {
     e.preventDefault();
     setFighter2Id(Math.floor(Math.random() * 809) + 1);
   };
-
-  useEffect(() => {}, [fighter1Id]);
 
   // useEffect(() => {
   //   if (!isLoading && pokemons.length > 1) {
@@ -80,12 +82,22 @@ function PokeFight() {
               hp={fighter1.base.HP}
               isLoading={isLoading1}
               setNewPlayer={handleNewPokemon1}
+              status={
+                attackerStatus === fighter1.name.english
+                  ? "attacker"
+                  : defenderStatus === fighter1.name.english
+                  ? "defender"
+                  : ""
+              }
             />
             <FightButton
               poke1={fighter1}
               poke2={fighter2}
-              // pokemons={pokemons}
               setWinner={setWinner}
+              setStatus={(attacker, defender) => {
+                setAttackerStatus(attacker);
+                setDefenderStatus(defender);
+              }}
             />
             <Fighter
               id={fighter2.id}
@@ -100,6 +112,13 @@ function PokeFight() {
               hp={fighter2.base.HP}
               isLoading={isLoading2}
               setNewPlayer={handleNewPokemon2}
+              status={
+                attackerStatus === fighter2.name.english
+                  ? "attacker"
+                  : defenderStatus === fighter2.name.english
+                  ? "defender"
+                  : ""
+              }
             />
           </div>
         </>
