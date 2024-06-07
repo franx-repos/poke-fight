@@ -26,26 +26,27 @@ function Fighter({
   experience,
   hp,
   setNewPlayer,
+  status,
 }) {
   const imgSource =
     img?.sprites?.other?.dream_world.front_default ||
     img?.sprites?.other?.home.front_default;
 
-  const [progress, setProgress] = useState(100);
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setProgress((oldProgress) => {
+  //       if (oldProgress <= 0) {
+  //         return 100;
+  //       }
+  //       const diff = Math.random() * 10;
+  //       return Math.min(oldProgress - diff, 100);
+  //     });
+  //   }, 1000);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-       
-        const diff = 1;
-        return Math.min(oldProgress - diff, hp);
-      });
-    }, 1000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(timer);
+  //   };
+  // }, []);
 
   const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 10,
@@ -97,6 +98,13 @@ function Fighter({
           objectFit: "contain",
           marginBottom: "1rem",
         }}
+        className={
+          status === "attacker"
+            ? "attacker-class"
+            : status === "defender"
+            ? "defender-class"
+            : ""
+        }
       />
 
       <CardContent
@@ -173,7 +181,7 @@ function Fighter({
         >
           HP: {hp}
         </Typography>
-        <BorderLinearProgress variant="determinate" value={progress} />
+        <BorderLinearProgress variant="determinate" value={hp} />
       </CardContent>
       <Button
         size="large"
