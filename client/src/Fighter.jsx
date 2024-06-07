@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import useGetPokemonAndImage from "./GetNewPokemon";
+
 import * as React from "react";
 import {
   Card,
