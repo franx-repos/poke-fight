@@ -1,21 +1,23 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import pokemonRoutes from './routes/pokemon.js';
-import connectDB from './db.js';
+import express from "express";
+import pokemons from "./data.js";
+import cors from "cors";
+import connectDB from "./db.js";
+import dotenv from "dotenv";
+import pokemonRoutes from "./routes/pokemon.js"; // Import der Routen
 
+dotenv.config();
+
+connectDB();
 const app = express();
 const PORT = process.env.PORT || 8000;
-
-// Middleware
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Datenbankverbindung
-connectDB();
+// Routen für feste Pokémon-Daten
+app.get("/pokemons", (req, res) => res.json(pokemons));
 
-// Routen
-app.use('/api/pokemon', pokemonRoutes);
+// Routen für dynamische Daten (XP, Wins, Losses)
+app.use("/api/pokemon", pokemonRoutes);
 
-// Starten des Servers
-app.listen(PORT, () => {
-  console.log(`Server is running on PORT: ${PORT}`);
-});
+app.listen(PORT, () => console.log("Server is running on PORT: " + PORT));
