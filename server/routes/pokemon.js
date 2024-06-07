@@ -1,55 +1,28 @@
 import express from 'express';
 import Pokemon from '../models/Pokemon.js';
-import pokemons from '../data.js';
 
 const router = express.Router();
 
-// Endpunkt zum Abrufen eines Pokémon
+// Endpunkt zum Abrufen eines Pokémon aus der MongoDB
 router.get('/:id', async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
-    const pokemonFromFile = pokemons.find(pokemon => pokemon.id === id);
-    if (!pokemonFromFile) {
-      return res.status(404).send({ error: "Pokémon not found" });
-    }
-
-    let pokemon = await Pokemon.findOne({ id: id });
+    const pokemon = await Pokemon.findOne({ id: req.params.id });
     if (!pokemon) {
-      // Neues Pokémon-Dokument erstellen
-      pokemon = new Pokemon({
-        id: id,
-        xp: 0,
-        wins: 0,
-        losses: 0
-      });
-
-      await pokemon.save();
+      return res.status(404).json({ error: 'Pokemon not found' });
     }
-
-    res.json({
-      ...pokemonFromFile,
-      xp: pokemon.xp,
-      wins: pokemon.wins,
-      losses: pokemon.losses
-    });
+    res.json(pokemon);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Endpunkt zum Aktualisieren eines Pokémon
+// Endpunkt zum Aktualisieren eines Pokémon in der MongoDB
 router.put('/:id', async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
     const { xp, wins, losses } = req.body;
-    const updateFields = {};
-    if (xp !== undefined) updateFields.xp = xp;
-    if (wins !== undefined) updateFields.wins = wins;
-    if (losses !== undefined) updateFields.losses = losses;
-
     const updatedPokemon = await Pokemon.findOneAndUpdate(
-      { id: id },
-      { $inc: updateFields },
+      { id: req.params.id },
+      { xp, wins, losses },
       { new: true }
     );
     res.json(updatedPokemon);
