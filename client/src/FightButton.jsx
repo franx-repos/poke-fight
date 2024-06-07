@@ -138,30 +138,39 @@ function FightButton({
     setCurrentHp1(poke1.base.HP);
     setCurrentHp2(poke2.base.HP);
   };
+  console.log(isFighting);
 
   return (
-    <Box
-      className="highlight"
-      component="section"
-      sx={{ p: 5, marginTop: 6 }}
-      minWidth="25%"
-      height="36.5rem"
-      overflow={"auto"}
-    >
-      {fightResult.length > 0 && (
-        <Box component="section">
-          <h2>Battle course:</h2>
-          <List>
-            {fightResult.map((entry, index) => (
-              <ListItem key={index}>{entry}</ListItem>
-            ))}
-          </List>
+    <>
+      {isFighting ? (
+        <Box
+          className="highlight"
+          component="section"
+          sx={{ p: 5, marginTop: 6 }}
+          minWidth="25%"
+          height="36.5rem"
+          overflow={"auto"}
+        >
+          {fightResult.length > 0 && (
+            <Box component="section">
+              <h2>Battle course:</h2>
+              <List>
+                {fightResult.map((entry, index) => (
+                  <ListItem key={index}>{entry}</ListItem>
+                ))}
+              </List>
+            </Box>
+          )}
         </Box>
+      ) : (
+        <div>
+          <img src="src\assets\Street_Fighter_VS_logo.png" alt="VS icon" />
+          <button onClick={handleFight} disabled={isFighting}>
+            Fight
+          </button>
+        </div>
       )}
-      <button onClick={handleFight} disabled={isFighting}>
-        Fight
-      </button>
-    </Box>
+    </>
   );
 }
 
