@@ -5,7 +5,6 @@ import FightButton from "./FightButton";
 import useGetPokemonAndImage from "./GetNewPokemon";
 
 function PokeFight() {
-  // const { pokemons, isLoading } = useFetchData();
   const [fighter1Id, setFighter1Id] = useState(
     Math.floor(Math.random() * 809) + 1
   );
@@ -32,6 +31,18 @@ function PokeFight() {
     error: error2,
   } = useGetPokemonAndImage(fighter2Id);
 
+  useEffect(() => {
+    if (fighter1 && fighter1.base) {
+      setCurrentHp1(fighter1.base.HP);
+    }
+  }, [fighter1]);
+
+  useEffect(() => {
+    if (fighter2 && fighter2.base) {
+      setCurrentHp2(fighter2.base.HP);
+    }
+  }, [fighter2]);
+
   const handleNewPokemon1 = (e) => {
     e.preventDefault();
     setFighter1Id(Math.floor(Math.random() * 809) + 1);
@@ -41,6 +52,9 @@ function PokeFight() {
     e.preventDefault();
     setFighter2Id(Math.floor(Math.random() * 809) + 1);
   };
+  // make sure that currentHp is not getting less than 0
+  currentHp1 < 0 && setCurrentHp1(0);
+  currentHp2 < 0 && setCurrentHp2(0);
 
   // useEffect(() => {
   //   if (!isLoading && pokemons.length > 1) {
@@ -79,7 +93,7 @@ function PokeFight() {
               defense={fighter1.base.Defense}
               spDefense={fighter1.base["Sp. Defense"]}
               experience={fighter1Image.base_experience}
-              hp={fighter1.base.HP}
+              hp={currentHp1}
               isLoading={isLoading1}
               setNewPlayer={handleNewPokemon1}
               status={
@@ -93,6 +107,10 @@ function PokeFight() {
             <FightButton
               poke1={fighter1}
               poke2={fighter2}
+              currentHp1={currentHp1}
+              currentHp2={currentHp2}
+              setCurrentHp1={setCurrentHp1}
+              setCurrentHp2={setCurrentHp2}
               setWinner={setWinner}
               setStatus={(attacker, defender) => {
                 setAttackerStatus(attacker);
@@ -109,7 +127,7 @@ function PokeFight() {
               defense={fighter2.base.Defense}
               spDefense={fighter2.base["Sp. Defense"]}
               experience={fighter2Image.base_experience}
-              hp={fighter2.base.HP}
+              hp={currentHp2}
               isLoading={isLoading2}
               setNewPlayer={handleNewPokemon2}
               status={
