@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import useGetPokemonAndImage from "./GetNewPokemon";
+
 import * as React from "react";
 import {
   Card,
@@ -36,11 +36,9 @@ function Fighter({
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress((oldProgress) => {
-        if (oldProgress <= 0) {
-          return 100;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress - diff, 100);
+       
+        const diff = 1;
+        return Math.min(oldProgress - diff, hp);
       });
     }, 1000);
 
