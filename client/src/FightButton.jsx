@@ -163,12 +163,12 @@ function FightButton({
           )}
         </Box>
       ) : (
-        <div>
+        <Box sx={{mt: "15%"}}>
           <img src="src\assets\Street_Fighter_VS_logo.png" alt="VS icon" />
           <button onClick={handleFight} disabled={isFighting}>
             Fight
           </button>
-        </div>
+        </Box>
       )}
     </>
   );
