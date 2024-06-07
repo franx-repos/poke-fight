@@ -114,9 +114,9 @@ function FightButton({
     return () => clearInterval(interval);
   }, [
     isFighting,
+    turn,
     poke1,
     poke2,
-    turn,
     currentHp1,
     currentHp2,
     setWinner,
