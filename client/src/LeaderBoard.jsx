@@ -1,5 +1,6 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
+import axios from "axios";
 
 const columns = [
   {
@@ -7,10 +8,10 @@ const columns = [
     headerName: "Dex",
     width: 70,
     disableColumnMenu: true,
-    description: "The Pokedex Number ",
+    description: "The Pokedex Number",
   },
   {
-    field: "Pokemon",
+    field: "name",
     headerName: "Pokemon",
     width: 130,
     disableColumnMenu: true,
@@ -25,41 +26,85 @@ const columns = [
     type: "number",
   },
   {
-    field: "loses",
-    headerName: "Loses",
+    field: "losses",
+    headerName: "Losses",
     type: "number",
     description: "Number of times the Pokemon lost.",
     disableColumnMenu: true,
     width: 100,
   },
   {
-    field: "Winrate",
+    field: "winrate",
     type: "number",
     disableColumnMenu: true,
     headerName: "Winrate",
-    description: "The Winrate is calculated with Wins/loses.",
+    description: "The Winrate is calculated with Wins/Losses.",
     width: 70,
-    valueGetter: (value, row) => {
-      const percentage =
-        ((row.wins || 0) * 100) / ((row.wins || 0) + (row.loses || 0));
-      return Math.round(percentage);
+    valueGetter: (params) => {
+      const wins = params.row.wins || 0;
+      const losses = params.row.losses || 0;
+      const total = wins + losses;
+      return total > 0 ? Math.round((wins / total) * 100) : 0;
     },
   },
 ];
 
-const rows = [
-  { id: 1, wins: 10, Pokemon: "Cinccino", loses: 35 },
-  { id: 2, wins: 20, Pokemon: "Probopass", loses: 42 },
-  { id: 3, wins: 5, Pokemon: "Deoxys", loses: 45 },
-  { id: 4, wins: 0, Pokemon: "Shedinja", loses: 16 },
-  { id: 5, wins: 105, Pokemon: "Kyogre", loses: 0 },
-  { id: 6, wins: 69, Pokemon: "Vibrava", loses: 150 },
-  { id: 7, wins: 16, Pokemon: "Giratina", loses: 44 },
-  { id: 8, wins: 6, Pokemon: "Slakoth", loses: 36 },
-  { id: 9, wins: 2, Pokemon: "Weavil", loses: 65 },
-];
+const updatePokemonStats = async (id, data) => {
+  try {
+    console.log(`Updating Pokemon with ID: ${id}`);
+    console.log('Data:', data);
+    const response = await axios.post(`/api/pokemon/${id}`, data);
+    console.log('Response data:', response.data);
+  } catch (error) {
+    if (error.response) {
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+      console.error('Response headers:', error.response.headers);
+    } else if (error.request) {
+      console.error('Request data:', error.request);
+    } else {
+      console.error('Error message:', error.message);
+    }
+    console.error('Config:', error.config);
+  }
+};
 
-export default function Leaderboard() {
+const Leaderboard = () => {
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    const fetchPokemonData = async () => {
+      try {
+        const response = await axios.get("/api/pokemon");
+        if (Array.isArray(response.data)) {
+          const data = response.data.map((pokemon) => ({
+            id: pokemon.id,
+            name: pokemon.name.english,
+            wins: pokemon.wins || 0,
+            losses: pokemon.losses || 0,
+          }));
+          setRows(data);
+        } else {
+          console.error("Die Antwortdaten sind nicht im erwarteten Format:", response.data);
+        }
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Pokémon-Daten:", error);
+      }
+    };
+
+    fetchPokemonData();
+  }, []);
+
+  const handleFight = (id) => {
+    // Beispielhafte Werte, die aktualisiert werden sollen
+    const data = {
+      xp: 50,
+      wins: 10,
+      losses: 2,
+    };
+    updatePokemonStats(id, data);
+  };
+
   return (
     <div
       style={{
@@ -86,6 +131,9 @@ export default function Leaderboard() {
           },
         }}
       />
+      <button onClick={() => handleFight(1)}>Update Pokemon Stats</button>
     </div>
   );
-}
+};
+
+export default Leaderboard;

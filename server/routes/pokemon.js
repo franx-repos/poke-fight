@@ -3,29 +3,37 @@ import Pokemon from '../models/Pokemon.js';
 
 const router = express.Router();
 
-// Endpunkt zum Abrufen eines Pokémon aus der MongoDB
-router.get('/:id', async (req, res) => {
+// Endpunkt zum Abrufen oder Aktualisieren eines Pokémon in der MongoDB
+router.post('/:id', async (req, res) => {
   try {
-    const pokemon = await Pokemon.findOne({ id: req.params.id });
-    if (!pokemon) {
-      return res.status(404).json({ error: 'Pokemon not found' });
-    }
-    res.json(pokemon);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Endpunkt zum Aktualisieren eines Pokémon in der MongoDB
-router.put('/:id', async (req, res) => {
-  try {
+    const { id } = req.params;
     const { xp, wins, losses } = req.body;
-    const updatedPokemon = await Pokemon.findOneAndUpdate(
-      { id: req.params.id },
-      { xp, wins, losses },
-      { new: true }
-    );
-    res.json(updatedPokemon);
+
+    // Überprüfen, ob ein Pokémon mit der angegebenen ID vorhanden ist
+    let pokemon = await Pokemon.findOne({ id });
+
+    if (!pokemon) {
+      // Wenn kein Pokémon mit der angegebenen ID gefunden wurde, erstelle ein neues
+      pokemon = new Pokemon({
+        id,
+        xp,
+        wins,
+        losses
+      });
+
+      // Speichern Sie das neue Pokémon in der Datenbank
+      await pokemon.save();
+      res.status(201).json(pokemon); // Rückgabe mit Statuscode 201 für "Created"
+    } else {
+      // Wenn ein Pokémon mit der angegebenen ID gefunden wurde, aktualisieren Sie seine Daten
+      pokemon.xp = xp;
+      pokemon.wins = wins;
+      pokemon.losses = losses;
+
+      // Speichern Sie die aktualisierten Daten in der Datenbank
+      await pokemon.save();
+      res.json(pokemon); // Rückgabe mit Statuscode 200 für "OK"
+    }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

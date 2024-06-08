@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import axios from "axios";
 
 function FightButton({
   poke1,
@@ -36,10 +37,31 @@ function FightButton({
     return damage;
   };
 
+  // Funktion zum Aktualisieren der Pokémon-Statistiken
+  const updatePokemonStats = async (id, data) => {
+    try {
+      console.log(`Updating Pokemon with ID: ${id}`);
+      console.log('Data:', data);
+      const response = await axios.post(`/api/pokemon/${id}`, data);
+      console.log('Response data:', response.data);
+    } catch (error) {
+      if (error.response) {
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      } else if (error.request) {
+        console.error('Request data:', error.request);
+      } else {
+        console.error('Error message:', error.message);
+      }
+      console.error('Config:', error.config);
+    }
+  };
+
   useEffect(() => {
     let interval;
     if (isFighting) {
-      interval = setInterval(() => {
+      interval = setInterval(async () => {
         if (!poke1 || !poke2) {
           console.error("Fehler: Pokémon-Daten sind nicht verfügbar.");
           clearInterval(interval);
@@ -105,6 +127,30 @@ function FightButton({
           setWinner(attacker.name.english);
           setIsFighting(false);
           clearInterval(interval);
+
+          // Update XP, Wins, and Losses for the winner and loser
+          const winner = attacker;
+          const loser = defender;
+
+          const updatedWinner = {
+            xp: (winner.xp || 0) + 10,
+            wins: (winner.wins || 0) + 1,
+            losses: winner.losses || 0,
+          };
+
+          const updatedLoser = {
+            xp: loser.xp || 0,
+            wins: loser.wins || 0,
+            losses: (loser.losses || 0) + 1,
+          };
+
+          try {
+            await updatePokemonStats(winner.id, updatedWinner);
+            await updatePokemonStats(loser.id, updatedLoser);
+          } catch (error) {
+            console.error("Fehler beim Aktualisieren der Pokémon-Daten:", error);
+          }
+
           return;
         }
 
@@ -138,7 +184,6 @@ function FightButton({
     setCurrentHp1(poke1.base.HP);
     setCurrentHp2(poke2.base.HP);
   };
-  console.log(isFighting);
 
   return (
     <>
