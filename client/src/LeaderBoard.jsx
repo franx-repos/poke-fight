@@ -4,13 +4,6 @@ import axios from "axios";
 
 const columns = [
   {
-    field: "id",
-    headerName: "Dex",
-    width: 70,
-    disableColumnMenu: true,
-    description: "The Pokedex Number",
-  },
-  {
     field: "name",
     headerName: "Pokemon",
     width: 130,
@@ -49,11 +42,11 @@ const columns = [
   },
 ];
 
-const updatePokemonStats = async (id, data) => {
+const updatePokemonStats = async (name, data) => {
   try {
-    console.log(`Updating Pokemon with ID: ${id}`);
+    console.log(`Updating Pokemon with name: ${name}`);
     console.log('Data:', data);
-    const response = await axios.post(`/api/pokemon/${id}`, data);
+    const response = await axios.put(`/api/pokemon/name/${name}`, data);
     console.log('Response data:', response.data);
   } catch (error) {
     if (error.response) {
@@ -78,8 +71,7 @@ const Leaderboard = () => {
         const response = await axios.get("/api/pokemon");
         if (Array.isArray(response.data)) {
           const data = response.data.map((pokemon) => ({
-            id: pokemon.id,
-            name: pokemon.name.english,
+            name: pokemon.name,
             wins: pokemon.wins || 0,
             losses: pokemon.losses || 0,
           }));
@@ -95,14 +87,13 @@ const Leaderboard = () => {
     fetchPokemonData();
   }, []);
 
-  const handleFight = (id) => {
-    // Beispielhafte Werte, die aktualisiert werden sollen
+  const handleFight = (name) => {
     const data = {
       xp: 50,
       wins: 10,
       losses: 2,
     };
-    updatePokemonStats(id, data);
+    updatePokemonStats(name, data);
   };
 
   return (
@@ -131,7 +122,7 @@ const Leaderboard = () => {
           },
         }}
       />
-      <button onClick={() => handleFight(1)}>Update Pokemon Stats</button>
+      <button onClick={() => handleFight("Bulbasaur")}>Update Pokemon Stats</button>
     </div>
   );
 };

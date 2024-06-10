@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -37,24 +37,14 @@ function FightButton({
     return damage;
   };
 
-  // Funktion zum Aktualisieren der Pokémon-Statistiken
-  const updatePokemonStats = async (id, data) => {
+  const updatePokemonStats = async (name, data) => {
     try {
-      console.log(`Updating Pokemon with ID: ${id}`);
-      console.log('Data:', data);
-      const response = await axios.post(`/api/pokemon/${id}`, data);
-      console.log('Response data:', response.data);
+      console.log(`Updating Pokemon with Name: ${name}`);
+      console.log("Data:", data);
+      const response = await axios.put(`/api/pokemon/name/${name}`, data);
+      console.log("Response data:", response.data);
     } catch (error) {
-      if (error.response) {
-        console.error('Response data:', error.response.data);
-        console.error('Response status:', error.response.status);
-        console.error('Response headers:', error.response.headers);
-      } else if (error.request) {
-        console.error('Request data:', error.request);
-      } else {
-        console.error('Error message:', error.message);
-      }
-      console.error('Config:', error.config);
+      console.error("Error:", error);
     }
   };
 
@@ -77,30 +67,14 @@ function FightButton({
           currentSecondHp,
         ] =
           poke1.base.Speed > poke2.base.Speed
-            ? [
-                poke1,
-                poke2,
-                setCurrentHp1,
-                setCurrentHp2,
-                currentHp1,
-                currentHp2,
-              ]
-            : [
-                poke2,
-                poke1,
-                setCurrentHp2,
-                setCurrentHp1,
-                currentHp2,
-                currentHp1,
-              ];
+            ? [poke1, poke2, setCurrentHp1, setCurrentHp2, currentHp1, currentHp2]
+            : [poke2, poke1, setCurrentHp2, setCurrentHp1, currentHp2, currentHp1];
 
         const attacker = turn % 2 === 0 ? first : second;
         const defender = turn % 2 === 0 ? second : first;
-        const currentAttackerHp =
-          turn % 2 === 0 ? currentFirstHp : currentSecondHp;
+        const currentAttackerHp = turn % 2 === 0 ? currentFirstHp : currentSecondHp;
         const setDefenderHp = turn % 2 === 0 ? setSecondHp : setFirstHp;
-        const currentDefenderHp =
-          turn % 2 === 0 ? currentSecondHp : currentFirstHp;
+        const currentDefenderHp = turn % 2 === 0 ? currentSecondHp : currentFirstHp;
 
         const attackType = Math.random() < 0.5 ? "physical" : "special";
         const damage = attack(
@@ -115,7 +89,7 @@ function FightButton({
         setFightResult((prevLog) => [
           ...prevLog,
           `attacker: ${attacker.name.english}
-          attack type: ${attackType} 
+          attack type: ${attackType}
           attack damage: ${damage}`,
         ]);
 
@@ -128,7 +102,6 @@ function FightButton({
           setIsFighting(false);
           clearInterval(interval);
 
-          // Update XP, Wins, and Losses for the winner and loser
           const winner = attacker;
           const loser = defender;
 
@@ -145,8 +118,8 @@ function FightButton({
           };
 
           try {
-            await updatePokemonStats(winner.id, updatedWinner);
-            await updatePokemonStats(loser.id, updatedLoser);
+            await updatePokemonStats(winner.name.english, updatedWinner);
+            await updatePokemonStats(loser.name.english, updatedLoser);
           } catch (error) {
             console.error("Fehler beim Aktualisieren der Pokémon-Daten:", error);
           }
@@ -198,7 +171,7 @@ function FightButton({
         >
           {fightResult.length > 0 && (
             <Box component="section">
-              <h2>Battle course:</h2>
+              <h2>BattleKurs:</h2>
               <List>
                 {fightResult.map((entry, index) => (
                   <ListItem key={index}>{entry}</ListItem>
@@ -209,7 +182,7 @@ function FightButton({
         </Box>
       ) : (
         <div>
-          <img src="src\assets\Street_Fighter_VS_logo.png" alt="VS icon" />
+          <img src="src/assets/Street_Fighter_VS_logo.png" alt="VS icon" />
           <button onClick={handleFight} disabled={isFighting}>
             Fight
           </button>
