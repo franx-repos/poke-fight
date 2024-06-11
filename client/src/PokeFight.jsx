@@ -113,6 +113,14 @@ function PokeFight() {
             <FightButton
               poke1={fighter1}
               poke2={fighter2}
+              img1={
+                fighter1Image?.sprites?.other?.dream_world.front_default ||
+                fighter1Image?.sprites?.other?.home.front_default
+              }
+              img2={
+                fighter2Image?.sprites?.other?.dream_world.front_default ||
+                fighter2Image?.sprites?.other?.home.front_default
+              }
               currentHp1={currentHp1}
               currentHp2={currentHp2}
               setCurrentHp1={setCurrentHp1}
