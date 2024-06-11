@@ -138,7 +138,6 @@ function FightButton({
     setCurrentHp1(poke1.base.HP);
     setCurrentHp2(poke2.base.HP);
   };
-  console.log(isFighting);
 
   return (
     <>
