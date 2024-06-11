@@ -1,0 +1,116 @@
+import React, { useEffect, useState } from "react";
+import { DataGrid } from "@mui/x-data-grid";
+import axios from "axios";
+
+const columns = [
+  {
+    field: "name",
+    headerName: "Pokemon",
+    width: 130,
+    disableColumnMenu: true,
+    description: "Name of the Pokemon",
+  },
+  {
+    field: "wins",
+    headerName: "Wins",
+    width: 80,
+    disableColumnMenu: true,
+    description: "Number of times the Pokemon won.",
+    type: "number",
+  },
+  {
+    field: "losses",
+    headerName: "Losses",
+    type: "number",
+    description: "Number of times the Pokemon lost.",
+    disableColumnMenu: true,
+    width: 100,
+  },
+];
+
+const updatePokemonStats = async (name, data) => {
+  try {
+    console.log(`Updating Pokemon with name: ${name}`);
+    console.log('Data:', data);
+    const response = await axios.put(`/api/pokemon/name/${name}`, data);
+    console.log('Response data:', response.data);
+  } catch (error) {
+    if (error.response) {
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+      console.error('Response headers:', error.response.headers);
+    } else if (error.request) {
+      console.error('Request data:', error.request);
+    } else {
+      console.error('Error message:', error.message);
+    }
+    console.error('Config:', error.config);
+  }
+};
+
+const GetWinsLoses = () => {
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    const fetchPokemonData = async () => {
+      try {
+        const response = await axios.get("/api/pokemon");
+        if (Array.isArray(response.data)) {
+          const data = response.data.map((pokemon) => ({
+            name: pokemon.name,
+            wins: pokemon.wins || 0,
+            losses: pokemon.losses || 0,
+          }));
+          setRows(data);
+        } else {
+          console.error("Die Antwortdaten sind nicht im erwarteten Format:", response.data);
+        }
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Pokémon-Daten:", error);
+      }
+    };
+
+    fetchPokemonData();
+  }, []);
+
+  const handleFight = (name) => {
+    const data = {
+      xp: 50,
+      wins: 10,
+      losses: 2,
+    };
+    updatePokemonStats(name, data);
+  };
+
+  return (
+    <div
+      style={{
+        height: "auto",
+        width: "100%",
+        backgroundColor: "rgba(0, 0, 0, 0.7)",
+      }}
+    >
+      <DataGrid
+        disableRowSelectionOnClick
+        sortingOrder={["desc", "asc"]}
+        rows={rows}
+        columns={columns.map((column) => ({
+          ...column,
+          headerClassName: "tablehead",
+          cellClassName: "tablecell",
+        }))}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 10 },
+          },
+          sorting: {
+            sortModel: [{ field: "wins", sort: "desc" }],
+          },
+        }}
+      />
+      <button onClick={() => handleFight("Bulbasaur")}>Update Pokemon Stats</button>
+    </div>
+  );
+};
+
+export default GetWinsLoses;

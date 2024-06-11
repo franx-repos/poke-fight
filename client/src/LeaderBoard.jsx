@@ -1,5 +1,7 @@
 import * as React from "react";
 import { DataGrid } from "@mui/x-data-grid";
+import Getallpoke from "./GetAllPoke";
+import GetWinsLoses from "./GetWinsLoses";
 
 const columns = [
   {
@@ -10,7 +12,7 @@ const columns = [
     description: "The Pokedex Number ",
   },
   {
-    field: "Pokemon",
+    field: "name",
     headerName: "Pokemon",
     width: 130,
     disableColumnMenu: true,
@@ -39,27 +41,17 @@ const columns = [
     headerName: "Winrate",
     description: "The Winrate is calculated with Wins/loses.",
     width: 70,
-    valueGetter: (value, row) => {
+    valueGetter: (value, pokemon) => {
       const percentage =
-        ((row.wins || 0) * 100) / ((row.wins || 0) + (row.loses || 0));
+        ((pokemon.wins || 0) * 100) / ((pokemon.wins || 0) + (pokemon.loses || 0));
       return Math.round(percentage);
     },
   },
 ];
 
-const rows = [
-  { id: 1, wins: 10, Pokemon: "Cinccino", loses: 35 },
-  { id: 2, wins: 20, Pokemon: "Probopass", loses: 42 },
-  { id: 3, wins: 5, Pokemon: "Deoxys", loses: 45 },
-  { id: 4, wins: 0, Pokemon: "Shedinja", loses: 16 },
-  { id: 5, wins: 105, Pokemon: "Kyogre", loses: 0 },
-  { id: 6, wins: 69, Pokemon: "Vibrava", loses: 150 },
-  { id: 7, wins: 16, Pokemon: "Giratina", loses: 44 },
-  { id: 8, wins: 6, Pokemon: "Slakoth", loses: 36 },
-  { id: 9, wins: 2, Pokemon: "Weavil", loses: 65 },
-];
-
 export default function Leaderboard() {
+  const pokemon = Getallpoke();
+
   return (
     <div
       style={{
@@ -71,7 +63,7 @@ export default function Leaderboard() {
       <DataGrid
         disableRowSelectionOnClick
         sortingOrder={["desc", "asc"]}
-        rows={rows}
+        rows={pokemon}
         columns={columns.map((column) => ({
           ...column,
           headerClassName: "tablehead",
@@ -85,7 +77,8 @@ export default function Leaderboard() {
             sortModel: [{ field: "wins", sort: "desc" }],
           },
         }}
-      />
+      /> 
+      <GetWinsLoses/>
     </div>
   );
 }
