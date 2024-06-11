@@ -2,10 +2,13 @@ import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import BasicModal from "./BasicModal";
 
 function FightButton({
   poke1,
   poke2,
+  img1,
+  img2,
   currentHp1,
   currentHp2,
   setCurrentHp1,
@@ -16,6 +19,8 @@ function FightButton({
   const [fightResult, setFightResult] = useState([]);
   const [isFighting, setIsFighting] = useState(false);
   const [turn, setTurn] = useState(0);
+  const [winner, setWinnerState] = useState("");
+  const [winnerImg, setWinnerImg] = useState("");
 
   const calculateDamage = (attack, defense, baseDamage = 10) => {
     return Math.floor(
@@ -103,6 +108,11 @@ function FightButton({
             `${defender.name.english} is defeated. ${attacker.name.english} wins!`,
           ]);
           setWinner(attacker.name.english);
+          setWinnerState(attacker.name.english);
+          const winnerImage = attacker === poke1 ? img1 : img2;
+
+          setWinnerImg(winnerImage);
+
           setIsFighting(false);
           clearInterval(interval);
           return;
@@ -123,8 +133,9 @@ function FightButton({
     setStatus,
     setCurrentHp1,
     setCurrentHp2,
+    img1, // Add img1 to dependencies
+    img2, // Add img2 to dependencies
   ]);
-
   const handleFight = () => {
     if (!poke1 || !poke2) {
       console.error("Fehler: Pokémon-Daten sind nicht verfügbar.");
@@ -139,8 +150,11 @@ function FightButton({
     setCurrentHp2(poke2.base.HP);
   };
 
+  winner && console.log(winner);
   return (
     <>
+      {winner && <BasicModal winner={winner} winnerImg={winnerImg} />}
+
       {fightResult.length > 0 ? (
         <Box
           className="highlight"
@@ -159,7 +173,7 @@ function FightButton({
         </Box>
       ) : (
         <Box sx={{ mt: "15%" }}>
-          <img src="src\assets\Street_Fighter_VS_logo.png" alt="VS icon" />
+          <img src="src/assets/Street_Fighter_VS_logo.png" alt="VS icon" />
           <button onClick={handleFight} disabled={isFighting}>
             Fight
           </button>
