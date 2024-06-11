@@ -142,7 +142,7 @@ function FightButton({
 
   return (
     <>
-      {isFighting ? (
+      {fightResult.length > 0 ? (
         <Box
           className="highlight"
           component="section"
@@ -151,19 +151,15 @@ function FightButton({
           height="36.5rem"
           overflow={"auto"}
         >
-          {fightResult.length > 0 && (
-            <Box component="section">
-              <h2>Battle course:</h2>
-              <List>
-                {fightResult.map((entry, index) => (
-                  <ListItem key={index}>{entry}</ListItem>
-                ))}
-              </List>
-            </Box>
-          )}
+          <h2>Battle course:</h2>
+          <List>
+            {fightResult.map((entry, index) => (
+              <ListItem key={index}>{entry}</ListItem>
+            ))}
+          </List>
         </Box>
       ) : (
-        <Box sx={{mt: "15%"}}>
+        <Box sx={{ mt: "15%" }}>
           <img src="src\assets\Street_Fighter_VS_logo.png" alt="VS icon" />
           <button onClick={handleFight} disabled={isFighting}>
             Fight
