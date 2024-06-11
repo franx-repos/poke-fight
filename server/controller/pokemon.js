@@ -1,6 +1,5 @@
 import Pokemon from '../models/Pokemon.js';
 
-
 export const getPokemonByName = async (req, res) => {
   try {
     const name = req.params.name;
@@ -21,11 +20,16 @@ export const updateOrCreatePokemon = async (req, res) => {
     let pokemon = await Pokemon.findOne({ name });
 
     if (pokemon) {
-      pokemon.xp = xp || pokemon.xp;
-      pokemon.wins = wins || pokemon.wins;
-      pokemon.losses = losses || pokemon.losses;
+      pokemon.xp += xp !== undefined ? xp : 0;
+      pokemon.wins += wins !== undefined ? wins : 0;
+      pokemon.losses += losses !== undefined ? losses : 0;
     } else {
-      pokemon = new Pokemon({ name, xp: xp || 0, wins: wins || 0, losses: losses || 0 });
+      pokemon = new Pokemon({
+        name,
+        xp: xp || 0,
+        wins: wins || 0,
+        losses: losses || 0,
+      });
     }
 
     const updatedPokemon = await pokemon.save();
