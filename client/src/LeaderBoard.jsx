@@ -1,91 +1,122 @@
-import * as React from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import React, { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import axios from 'axios';
 
 const columns = [
   {
-    field: "id",
-    headerName: "Dex",
-    width: 70,
-    disableColumnMenu: true,
-    description: "The Pokedex Number ",
-  },
-  {
-    field: "Pokemon",
-    headerName: "Pokemon",
+    field: 'name',
+    headerName: 'Pokemon',
     width: 130,
     disableColumnMenu: true,
-    description: "Name of the Pokemon",
+    description: 'Name of the Pokemon',
   },
   {
-    field: "wins",
-    headerName: "Wins",
+    field: 'wins',
+    headerName: 'Wins',
     width: 80,
     disableColumnMenu: true,
-    description: "Number of times the Pokemon won.",
-    type: "number",
+    description: 'Number of times the Pokemon won.',
+    type: 'number',
   },
   {
-    field: "loses",
-    headerName: "Loses",
-    type: "number",
-    description: "Number of times the Pokemon lost.",
+    field: 'losses',
+    headerName: 'Losses',
+    type: 'number',
+    description: 'Number of times the Pokemon lost.',
     disableColumnMenu: true,
     width: 100,
   },
   {
-    field: "Winrate",
-    type: "number",
+    field: 'winrate',
+    type: 'number',
     disableColumnMenu: true,
-    headerName: "Winrate",
-    description: "The Winrate is calculated with Wins/loses.",
-    width: 70,
-    valueGetter: (value, row) => {
-      const percentage =
-        ((row.wins || 0) * 100) / ((row.wins || 0) + (row.loses || 0));
-      return Math.round(percentage);
-    },
+    headerName: 'Winrate',
+    description: 'The Winrate is calculated with Wins/(Wins + Losses).',
+    width: 100,
   },
 ];
 
-const rows = [
-  { id: 1, wins: 10, Pokemon: "Cinccino", loses: 35 },
-  { id: 2, wins: 20, Pokemon: "Probopass", loses: 42 },
-  { id: 3, wins: 5, Pokemon: "Deoxys", loses: 45 },
-  { id: 4, wins: 0, Pokemon: "Shedinja", loses: 16 },
-  { id: 5, wins: 105, Pokemon: "Kyogre", loses: 0 },
-  { id: 6, wins: 69, Pokemon: "Vibrava", loses: 150 },
-  { id: 7, wins: 16, Pokemon: "Giratina", loses: 44 },
-  { id: 8, wins: 6, Pokemon: "Slakoth", loses: 36 },
-  { id: 9, wins: 2, Pokemon: "Weavil", loses: 65 },
-];
+const Leaderboard = () => {
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-export default function Leaderboard() {
+  useEffect(() => {
+    const fetchPokemonData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/pokemon');
+        // console.log('pokemons in leaderboard:', response.data);
+        if (Array.isArray(response.data)) {
+          const data = response.data.map((pokemon) => {
+            const wins = pokemon.wins ?? 0;
+            const losses = pokemon.losses ?? 0;
+            const total = wins + losses;
+            const winrate = total > 0 ? Math.round((wins / total) * 100) : 0;
+            return {
+              id: pokemon._id,
+              name: pokemon.name,
+              wins: wins,
+              losses: losses,
+              winrate: winrate,
+            };
+          });
+          // console.log('Mapped data:', data);
+          setRows(data);
+        } else {
+          console.error(
+            'The response data is not in the expected format:',
+            response.data
+          );
+        }
+      } catch (error) {
+        console.error('Error fetching Pokémon data:', error);
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPokemonData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading leaderboard data: {error.message}</div>;
+  }
+
   return (
     <div
       style={{
-        height: "auto",
-        width: "100%",
-        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        height: 'auto',
+        width: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
       }}
     >
       <DataGrid
         disableRowSelectionOnClick
-        sortingOrder={["desc", "asc"]}
+        sortingOrder={['desc', 'asc']}
         rows={rows}
         columns={columns.map((column) => ({
           ...column,
-          headerClassName: "tablehead",
-          cellClassName: "tablecell",
+          headerClassName: 'tablehead',
+          cellClassName: 'tablecell',
         }))}
         initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 10 },
           },
           sorting: {
-            sortModel: [{ field: "wins", sort: "desc" }],
+            sortModel: [{ field: 'wins', sort: 'desc' }],
           },
         }}
+        pageSizeOptions={[5, 10, 20]}
+        getRowId={(row) => row.id}
       />
     </div>
   );
-}
+};
+
+export default Leaderboard;

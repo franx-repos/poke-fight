@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
-import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
+import React, { useState, useEffect, useCallback } from 'react';
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import axios from 'axios';
 
 function FightButton({
   poke1,
@@ -23,25 +24,42 @@ function FightButton({
     );
   };
 
-  const attack = (attacker, defender, attackType, currentHp, setCurrentHp) => {
-    const damage =
-      attackType === "physical"
-        ? calculateDamage(attacker.base.Attack, defender.base.Defense)
-        : calculateDamage(
-            attacker.base["Sp. Attack"],
-            defender.base["Sp. Defense"]
-          );
-    const newHp = currentHp - damage;
-    setCurrentHp(newHp);
-    return damage;
+  const attack = useCallback(
+    (attacker, defender, attackType, currentHp, setCurrentHp) => {
+      const damage =
+        attackType === 'physical'
+          ? calculateDamage(attacker.base.Attack, defender.base.Defense)
+          : calculateDamage(
+              attacker.base['Sp. Attack'],
+              defender.base['Sp. Defense']
+            );
+      const newHp = currentHp - damage;
+      setCurrentHp(newHp);
+      return damage;
+    },
+    []
+  );
+
+  const updatePokemonStats = async (name, data) => {
+    try {
+      console.log(`Updating Pokemon with Name: ${name}`);
+      console.log('Data:', data);
+      const response = await axios.put(
+        `http://localhost:8000/api/pokemon/name/${name}`,
+        data
+      );
+      console.log('Response data:', response.data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   useEffect(() => {
     let interval;
     if (isFighting) {
-      interval = setInterval(() => {
+      interval = setInterval(async () => {
         if (!poke1 || !poke2) {
-          console.error("Fehler: Pokémon-Daten sind nicht verfügbar.");
+          console.error('Error: Pokémon data is not available.');
           clearInterval(interval);
           return;
         }
@@ -80,7 +98,7 @@ function FightButton({
         const currentDefenderHp =
           turn % 2 === 0 ? currentSecondHp : currentFirstHp;
 
-        const attackType = Math.random() < 0.5 ? "physical" : "special";
+        const attackType = Math.random() < 0.5 ? 'physical' : 'special';
         const damage = attack(
           attacker,
           defender,
@@ -93,7 +111,7 @@ function FightButton({
         setFightResult((prevLog) => [
           ...prevLog,
           `attacker: ${attacker.name.english}
-          attack type: ${attackType} 
+          attack type: ${attackType}
           attack damage: ${damage}`,
         ]);
 
@@ -105,6 +123,29 @@ function FightButton({
           setWinner(attacker.name.english);
           setIsFighting(false);
           clearInterval(interval);
+
+          const winner = attacker;
+          const loser = defender;
+
+          const updatedWinner = {
+            xp: (winner.xp || 0) + 10,
+            wins: (winner.wins || 0) + 1,
+            losses: winner.losses || 0,
+          };
+
+          const updatedLoser = {
+            xp: loser.xp || 0,
+            wins: loser.wins || 0,
+            losses: (loser.losses || 0) + 1,
+          };
+
+          try {
+            await updatePokemonStats(winner.name.english, updatedWinner);
+            await updatePokemonStats(loser.name.english, updatedLoser);
+          } catch (error) {
+            console.error('Error updating Pokémon data:', error);
+          }
+
           return;
         }
 
@@ -123,11 +164,12 @@ function FightButton({
     setStatus,
     setCurrentHp1,
     setCurrentHp2,
+    attack,
   ]);
 
   const handleFight = () => {
     if (!poke1 || !poke2) {
-      console.error("Fehler: Pokémon-Daten sind nicht verfügbar.");
+      console.error('Error: Pokémon data is not available.');
       return;
     }
 
@@ -138,22 +180,21 @@ function FightButton({
     setCurrentHp1(poke1.base.HP);
     setCurrentHp2(poke2.base.HP);
   };
-  console.log(isFighting);
 
   return (
     <>
       {isFighting ? (
         <Box
-          className="highlight"
-          component="section"
+          className='highlight'
+          component='section'
           sx={{ p: 5, marginTop: 6 }}
-          minWidth="25%"
-          height="36.5rem"
-          overflow={"auto"}
+          minWidth='25%'
+          height='36.5rem'
+          overflow={'auto'}
         >
           {fightResult.length > 0 && (
-            <Box component="section">
-              <h2>Battle course:</h2>
+            <Box component='section'>
+              <h2>BattleKurs:</h2>
               <List>
                 {fightResult.map((entry, index) => (
                   <ListItem key={index}>{entry}</ListItem>
@@ -164,7 +205,7 @@ function FightButton({
         </Box>
       ) : (
         <div>
-          <img src="src\assets\Street_Fighter_VS_logo.png" alt="VS icon" />
+          <img src='src/assets/Street_Fighter_VS_logo.png' alt='VS icon' />
           <button onClick={handleFight} disabled={isFighting}>
             Fight
           </button>
